@@ -32,7 +32,7 @@ def get_quotes():
         oleh = quotez.split(":")[0]
         quotes = f"{quote}\n~{oleh}"
     except:
-        quotes = "Ngga ada Quote bijak buatmu wahai Tuan yang bijaksana :D"
+        quotes = "Ngga ada Quote bijak buatmu wahai Bapak yang bijaksana :D"
     return quotes
 
 
@@ -145,15 +145,15 @@ async def stats(_, message):
 async def start(client, message):
     buttons = ButtonMaker()
     buttons.ubutton(
-        "Owner", "https://t.me/save_usdt")
-    buttons.ubutton("Group", "https://t.me/arakurumi")
+        "Subtitle", "https://subscene.com/u/1271292")
+    buttons.ubutton("Group", "https://t.me/CollectionMovie_Subtitles")
     reply_markup = buttons.build_menu(2)
     if await CustomFilters.authorized(client, message):
         start_string = f'''
 <b>Mirror Tautan Lambat menjadi Tautan Cepat!</b>
 
 <b>Note :</b>
-Selalu backup File setelah Mirror untuk menghindari Team Drive terhapus!
+Biasakan mem-backup File setelah Mirror untuk menghindari Team Drive terhapus!
 
 Ketik <code>/{BotCommands.HelpCommand[0]}</code> untuk mendapatkan list perintah yang tersedia!
 
