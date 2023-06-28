@@ -151,9 +151,7 @@ def get_readable_message():
             msg += f"\n<b>├ Ukuran :</b> <code>{download.size()}</code>"
         # <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>
         msg += f"\n<b>├ User :</b> <code>{download.message.from_user.first_name}</code> | <b>ID :</b> <code>{download.message.from_user.id}</code>"
-        msg += f"\n<b>└</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
-        msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
-        msg += "\n\n"
+        msg += f"\n<b>└</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"        
     if len(msg) == 0:
         return None, None
     dl_speed = 0
@@ -185,8 +183,7 @@ def get_readable_message():
         buttons.ibutton("🪫", "status ref")
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
-    msg += f"\n<b>𝐘𝐎𝐘𝐎𝐍𝐆 𝐌𝐀𝐒𝐀𝐌𝐁𝐀</b>\n"    
-    msg += f"<b>🆃🄰🅂🅺🅂:</b> <code>{tasks}"
+    msg += f"\n<b>𝐘𝐎𝐘𝐎𝐍𝐆 𝐌𝐀𝐒𝐀𝐌𝐁𝐀</b>\n"       
     msg += f"\n<b>🅲🄿🆄 :</b> <code>{cpu_percent()}%</code> | <b>🆁🄰🅼 :</b> <code>{virtual_memory().percent}%</code>"
     msg += f"\n<b>🅳🅻🆂 :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>🆄🅻🆂 :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
     msg += f"\n<b>🆃🅳🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>🆃🆄🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
