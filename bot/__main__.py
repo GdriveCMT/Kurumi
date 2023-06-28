@@ -295,7 +295,7 @@ async def main():
         BotCommands.HelpCommand) & CustomFilters.authorized))
     bot.add_handler(MessageHandler(stats, filters=command(
         BotCommands.StatsCommand) & CustomFilters.authorized))
-    LOGGER.info("Bot Started!")
+    LOGGER.info("Bot Anda Started!")
     signal(SIGINT, exit_clean_up)
 
 bot.loop.run_until_complete(main())
