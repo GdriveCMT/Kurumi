@@ -37,6 +37,7 @@ async def countNode(_, message):
             msg += f'\n\n<b>Sub Folders :</b> <code>{folders}</code>'
             msg += f'\n\n<b>Files :</b> <code>{files}</code>'
         msg += f'\n\n<b>Oleh :</b> {tag}'
+        msg += f'\nTerima kasih dari Kami <b>Pea Masamba</b>'
     else:
         msg = 'Send Gdrive link along with command or by replying to the link by command'
     await sendMessage(message, msg)
