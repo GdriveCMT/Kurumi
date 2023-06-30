@@ -130,7 +130,7 @@ def get_readable_message():
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
                 msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"            
+                msg += f"\n <b>Status :</b> <code>{download.status()}</code>"            
             msg += f"\n <b>Proses:</b> <code>{download.processed_bytes()}</code> Dr <code>{download.size()}</code>"
             msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"
             msg += f"\n <b>ETA:</b> <code>{download.eta()}</code>"            
@@ -141,7 +141,7 @@ def get_readable_message():
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>┌ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
                 msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
             msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
