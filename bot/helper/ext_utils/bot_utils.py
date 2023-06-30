@@ -102,14 +102,18 @@ async def get_telegraph_list(telegraph_content):
     return buttons.build_menu(1)
 
 
-def get_progress_bar_string(pct):
+def progress_bar(pct):
     pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
-    cFull = int(p // 8)
-    p_str = '▓' * cFull
-    p_str += '░' * (12 - cFull)
-    return f"[{p_str}]"
-
+    cFull = int(p / 10)
+    cIncomplete = int(round((p / 12 - cFull) * 4))
+    p_str = '●' * cFull
+    if cIncomplete > 0:
+        s = '◔◑◕●'
+        incomplete_char = s[cIncomplete - 1]
+        p_str += incomplete_char
+    p_str += '○' * (10 - len(p_str))
+    return p_str
 
 def get_readable_message():
     msg = "<b><a href='https://subscene.com/u/1271292'>🄿🅴🄰 🅼🄰🅂🄰🅼🄱🄰</a> </b>\n\n"
@@ -124,36 +128,27 @@ def get_readable_message():
         msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n"
         msg += f" <b>{download.status()}</b>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-            msg += f"\n\n {get_progress_bar_string(download.progress())}</a></b> » {download.progress()}"                                                                             
-            if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
-            else:
-                msg += f"\n <b>Status :</b> <code>{download.status()}</code>"            
-            msg += f"\n <b>Proses:</b> <code>{download.processed_bytes()}</code> Dr <code>{download.size()}</code>"
-            msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"
-            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code>"            
+            msg += f"\n\n {progress_bar(download.progress())}</a></b> » {download.progress()}"
+            msg += f"\n <b>Proses:</b> <code>{download.processed_bytes()}</code> of <code>{download.size()}</code>"
+            msg += f"\n <b>Kec:</b> <code>{download.speed()}</code>"
+            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code>"                          
+            msg += f"\n <b>Oleh:</b> <code>{download.extra_details['source']}</code>"
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n<b>Seeders :</b> <code>{download.seeders_num()}</code> | <b>Leechers :</b> <code>{download.leechers_num()}</code>"
+                    msg += f"\n <b>Seeders:</b> <code>{download.seeders_num()}</code>"
+                    msg += f" | <b>Leechers:</b> <code>{download.leechers_num()}</code>"
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
-            if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
-            else:
-                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
-            msg += f"\n<b>Kec :</b> <code>{download.upload_speed()}</code> | <b>Diupload :</b> <code>{download.uploaded_bytes()}</code>"
-            msg += f"\n<b>Ratio :</b> <code>{download.ratio()}</code> | <b>Waktu :</b> <code>{download.seeding_time()}</code>"
+            msg += f"\n <b>Ukuran:</b> {download.size()}"
+            msg += f"\n <b>kec:</b> {download.upload_speed()}"
+            msg += f" | <b>Unggah:</b> {download.uploaded_bytes()}"
+            msg += f"\n <b>Ratio:</b> {download.ratio()}"
+            msg += f" | <b>Waktu:</b> {download.seeding_time()}"
         else:
-            if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
-            else:
-                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
-        # <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>
-        msg += f"\n<b>Pgn :</b> <code>{download.message.from_user.first_name}</code> | <b>ID :</b> <code>{download.message.from_user.id}</code>"
-        msg += f"\n<b>Stop :</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"       
+            msg += f"\n <b>Ukuran:</b> <code>{download.size()}</code>"                           
+               
+        msg += f"\n <b>Stop:</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>"
         msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
         msg += "\n\n"
     if len(msg) == 0:
