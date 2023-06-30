@@ -121,37 +121,43 @@ def get_readable_message():
         globals()['STATUS_START'] = STATUS_LIMIT * (PAGES - 1)
         globals()['PAGE_NO'] = PAGES
     for download in list(download_dict.values())[STATUS_START:STATUS_LIMIT+STATUS_START]:
-        msg += f"<code>{escape(f'{download.name()}')}</code>"
+        msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n"
+        msg += f" <b>{download.status()}</b>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-            msg += f"\n<b>┌┤{get_progress_bar_string(download.progress())} <code>{download.progress()}</code>├┐</b>"
+            msg += f"\n\n {get_progress_bar_string(download.progress())}</a></b> » {download.progress()}"                               
+            msg += f" | <b>Elp:</b> <code>{get_readable_time(time() - download.extra_details['startTime'])}</code>"            
+            msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"                  
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>├ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>├ Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>├ Proses :</b> <code>{download.processed_bytes()}</code> dari <code>{download.size()}</code>"
-            msg += f"\n<b>├ Kec :</b> <code>{download.speed()}</code> | <b>ETA :</b> <code>{download.eta()}</code>"
+                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"            
+            msg += f"\n <b>Proses:</b> <code>{download.processed_bytes()}</code> Dr <code>{download.size()}</code>"
+            msg += f"\n <b>Speed:</b> <code>{download.speed()}</code>"
+            msg += f"\n <b>ETA:</b> <code>{download.eta()}</code>"            
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n<b>├ Seeders :</b> <code>{download.seeders_num()}</code> | <b>Leechers :</b> <code>{download.leechers_num()}</code>"
+                    msg += f"\n<b>Seeders :</b> <code>{download.seeders_num()}</code> | <b>Leechers :</b> <code>{download.leechers_num()}</code>"
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
                 msg += f"\n<b>┌ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>┌ Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>├ Ukuran :</b> <code>{download.size()}</code>"
-            msg += f"\n<b>├ Kec :</b> <code>{download.upload_speed()}</code> | <b>Diupload :</b> <code>{download.uploaded_bytes()}</code>"
-            msg += f"\n<b>├ Ratio :</b> <code>{download.ratio()}</code> | <b>Waktu :</b> <code>{download.seeding_time()}</code>"
+                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
+            msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
+            msg += f"\n<b>Kec :</b> <code>{download.upload_speed()}</code> | <b>Diupload :</b> <code>{download.uploaded_bytes()}</code>"
+            msg += f"\n<b>Ratio :</b> <code>{download.ratio()}</code> | <b>Waktu :</b> <code>{download.seeding_time()}</code>"
         else:
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>┌ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>┌ Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>├ Ukuran :</b> <code>{download.size()}</code>"
+                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
+            msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
         # <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>
-        msg += f"\n<b>├ Pgn :</b> <code>{download.message.from_user.first_name}</code> | <b>ID :</b> <code>{download.message.from_user.id}</code>"
-        msg += f"\n<b>└ Stop :</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
+        msg += f"\n<b>Pgn :</b> <code>{download.message.from_user.first_name}</code> | <b>ID :</b> <code>{download.message.from_user.id}</code>"
+        msg += f"\n<b>Stop :</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"       
+        msg += f"\n<b>▬▬▬▬▬▬▬▬▬▬▬▬▬</b>"
+        msg += "\n\n"
     if len(msg) == 0:
         return None, None
     dl_speed = 0
@@ -183,11 +189,10 @@ def get_readable_message():
         buttons.ibutton("🪫", "status ref")
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
-    msg += "____________________________"    
-    msg += f"\n<b>CPU :</b> <code>{cpu_percent()}%</code> | <b>RAM :</b> <code>{virtual_memory().percent}%</code>"
-    msg += f"\n<b>DLS :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>ULS :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
-    msg += f"\n<b>TDL :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>TUL :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
-    msg += f"\n<b>DISK :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>TIME :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
+    msg += f"\n<b>𝐘𝐎𝐘𝐎𝐍𝐆 𝐌𝐀𝐒𝐀𝐌𝐁𝐀</b>\n"
+    msg += f"\n<b>▼ :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>▲ :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
+    msg += f"\n<b>𝐓𝐃𝐋 :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>𝐓𝐔𝐋 :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
+    msg += f"\n<b>𝐃𝐈𝐒𝐊 :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>𝐓𝐏𝐌 :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
     return msg, button
 
 
