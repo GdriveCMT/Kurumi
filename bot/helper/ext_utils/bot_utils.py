@@ -184,6 +184,7 @@ def get_readable_message():
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
     msg += "____________________________"
+    msg += f"\n<b>🆃🄰🅂🅺🅂:</b> <code>{tasks}"
     msg += f"\n<b>🅲🄿🆄 :</b> <code>{cpu_percent()}%</code> | <b>🆁🄰🅼 :</b> <code>{virtual_memory().percent}%</code>"
     msg += f"\n<b>🄳🅻🅂 :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>🅄🅻🅂 :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
     msg += f"\n<b>🆃🄳🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>🆃🅄🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
