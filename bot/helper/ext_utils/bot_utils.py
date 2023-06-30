@@ -124,8 +124,7 @@ def get_readable_message():
         msg += f"\n<b> <i>{escape(f'{download.name()}')}</i>\n\n"
         msg += f" <b>{download.status()}</b>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-            msg += f"\n\n {get_progress_bar_string(download.progress())}</a></b> » {download.progress()}"                               
-            msg += f" | <b>Elp:</b> <code>{get_readable_time(time() - download.extra_details['startTime'])}</code>"            
+            msg += f"\n\n {get_progress_bar_string(download.progress())}</a></b> » {download.progress()}"                                                     
             msg += f"\n <b>Engine:</b> <code>{download.engine}</code>"                  
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
                 msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
