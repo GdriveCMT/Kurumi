@@ -28,17 +28,17 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Unggah..."
-    STATUS_DOWNLOADING = "Unduh..."
-    STATUS_CLONING = "Kloning..."
-    STATUS_QUEUEDL = "Menunggu Antri Unduh..."
-    STATUS_QUEUEUP = "Menunggu Antri Unggah..."
-    STATUS_PAUSED = "Dihentikan."
-    STATUS_ARCHIVING = "Arsip..."
-    STATUS_EXTRACTING = "Ekstrak..."
-    STATUS_SPLITTING = "Membagi..."
-    STATUS_CHECKING = "Mengecek..."
-    STATUS_SEEDING = "Mengeseed..."
+    STATUS_UPLOADING = "🅤🅝🅖🅖🅐🅗"
+    STATUS_DOWNLOADING = "🅤🅝🅓🅤🅗"
+    STATUS_CLONING = "🅚🅛🅞🅝🅘🅝🅖"
+    STATUS_QUEUEDL = "🅜🅔🅝🅤🅝🅖🅖🅤 🅐🅝🅣🅡🅘 🅤🅝🅓🅤🅗"
+    STATUS_QUEUEUP = "🅜🅔🅝🅤🅝🅖🅖🅤 🅐🅝🅣🅡🅘 🅤🅝🅖🅖🅐🅗"
+    STATUS_PAUSED = "🅓🅘🅗🅔🅝🅣🅘🅚🅐🅝"
+    STATUS_ARCHIVING = "🅐🅡🅢🅘🅟"
+    STATUS_EXTRACTING = "🅔🅚🅢🅣🅡🅐🅚"
+    STATUS_SPLITTING = "🅜🅔🅜🅑🅐🅖🅘"
+    STATUS_CHECKING = "🅜🅔🅝🅖🅔🅒🅔🅚"
+    STATUS_SEEDING = "🅜🅔🅝🅖🅔🅢🅔🅔🅓"
 
 
 class setInterval:
