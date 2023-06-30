@@ -28,14 +28,14 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Mengunggah..."
-    STATUS_DOWNLOADING = "Mengunduh..."
-    STATUS_CLONING = "Mengclone..."
-    STATUS_QUEUEDL = "Menunggu antrian download..."
-    STATUS_QUEUEUP = "Menunggu antrian upload..."
+    STATUS_UPLOADING = "Unggah..."
+    STATUS_DOWNLOADING = "Unduh..."
+    STATUS_CLONING = "Kloning..."
+    STATUS_QUEUEDL = "Menunggu Antri Unduh..."
+    STATUS_QUEUEUP = "Menunggu Antri Unggah..."
     STATUS_PAUSED = "Dihentikan."
-    STATUS_ARCHIVING = "Mengarsip..."
-    STATUS_EXTRACTING = "Mengekstrak..."
+    STATUS_ARCHIVING = "Arsip..."
+    STATUS_EXTRACTING = "Ekstrak..."
     STATUS_SPLITTING = "Membagi..."
     STATUS_CHECKING = "Mengecek..."
     STATUS_SEEDING = "Mengeseed..."
