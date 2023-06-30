@@ -28,17 +28,17 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "🅤🅝🅖🅖🅐🅗"
-    STATUS_DOWNLOADING = "🅤🅝🅓🅤🅗"
-    STATUS_CLONING = "🅚🅛🅞🅝🅘🅝🅖"
-    STATUS_QUEUEDL = "🅜🅔🅝🅤🅝🅖🅖🅤 🅐🅝🅣🅡🅘 🅤🅝🅓🅤🅗"
-    STATUS_QUEUEUP = "🅜🅔🅝🅤🅝🅖🅖🅤 🅐🅝🅣🅡🅘 🅤🅝🅖🅖🅐🅗"
-    STATUS_PAUSED = "🅓🅘🅗🅔🅝🅣🅘🅚🅐🅝"
-    STATUS_ARCHIVING = "🅐🅡🅢🅘🅟"
-    STATUS_EXTRACTING = "🅔🅚🅢🅣🅡🅐🅚"
-    STATUS_SPLITTING = "🅜🅔🅜🅑🅐🅖🅘"
-    STATUS_CHECKING = "🅜🅔🅝🅖🅔🅒🅔🅚"
-    STATUS_SEEDING = "🅜🅔🅝🅖🅔🅢🅔🅔🅓"
+    STATUS_UPLOADING = "Mengunggah..."
+    STATUS_DOWNLOADING = "Mengunduh..."
+    STATUS_CLONING = "Mengclone..."
+    STATUS_QUEUEDL = "Menunggu antrian download..."
+    STATUS_QUEUEUP = "Menunggu antrian upload..."
+    STATUS_PAUSED = "Dihentikan..."
+    STATUS_ARCHIVING = "Mengarsip..."
+    STATUS_EXTRACTING = "Mengekstrak..."
+    STATUS_SPLITTING = "Membagi..."
+    STATUS_CHECKING = "Mengecek..."
+    STATUS_SEEDING = "Mengeseed..."
 
 
 class setInterval:
@@ -102,18 +102,13 @@ async def get_telegraph_list(telegraph_content):
     return buttons.build_menu(1)
 
 
-def progress_bar(pct):
+def get_progress_bar_string(pct):
     pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
-    cFull = int(p / 10)
-    cIncomplete = int(round((p / 12 - cFull) * 4))
-    p_str = '●' * cFull
-    if cIncomplete > 0:
-        s = '◔◑◕●'
-        incomplete_char = s[cIncomplete - 1]
-        p_str += incomplete_char
-    p_str += '○' * (10 - len(p_str))
-    return p_str
+    cFull = int(p // 8)
+    p_str = '■' * cFull
+    p_str += '□' * (12 - cFull)
+    return f"[{p_str}]"
 
 def get_readable_message():
     msg = "<b><a href='https://subscene.com/u/1271292'>🄿🅴🄰 🅼🄰🅂🄰🅼🄱🄰</a> </b>\n\n"
