@@ -271,7 +271,7 @@ async def restart_notification():
         except Exception as e:
             LOGGER.error(e)
 
-    now = datetime.now(timezone(f'Asia/Jakarta'))
+    now = datetime.now(timezone(f'Asia/Makassar'))
     date = now.strftime('%d/%m/%y')
     time = now.strftime('%I:%M:%S %p')
     if INCOMPLETE_TASK_NOTIFIER and DATABASE_URL:
