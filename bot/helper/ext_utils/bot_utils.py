@@ -124,7 +124,7 @@ def get_readable_message():
         msg += f"<code><i>{escape(f'{download.name()}')}</code></i>\n\n"
         msg += f"\n</b> <code>{download.status()}</code>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-            msg += f"\n<b>{get_progress_bar_string(download.progress())}» <code>{download.progress()}</code></b>"
+            msg += f"\n<b>{get_progress_bar_string(download.progress())} » <code>{download.progress()}</code></b>"
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
                 msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:                
