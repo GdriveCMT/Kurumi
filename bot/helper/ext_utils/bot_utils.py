@@ -106,9 +106,9 @@ def get_progress_bar_string(pct):
     pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
     cFull = int(p // 8)
-    p_str = '■' * cFull
-    p_str += '□' * (12 - cFull)
-    return f"[{p_str}]"
+    p_str = '◕' * cFull
+    p_str += '◔' * (12 - cFull)
+    return f"{p_str}"
 
 
 def get_readable_message():
@@ -123,9 +123,9 @@ def get_readable_message():
     for download in list(download_dict.values())[STATUS_START:STATUS_LIMIT+STATUS_START]:
         msg += f"<code>{escape(f'{download.name()}')}</code>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-            msg += f"\n<b>┌┤{get_progress_bar_string(download.progress())}» <code>{download.progress()}</code></b>"
+            msg += f"\n<b>{get_progress_bar_string(download.progress())}» <code>{download.progress()}</code></b>"
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>├ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>┌┤Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
                 msg += f"\n<b>├ Status :</b> <code>{download.status()}</code>"
             msg += f"\n<b>├ Proses :</b> <code>{download.processed_bytes()}</code> dari <code>{download.size()}</code>"
