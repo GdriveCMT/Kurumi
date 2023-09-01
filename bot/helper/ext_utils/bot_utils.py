@@ -121,8 +121,8 @@ def get_readable_message():
         globals()['STATUS_START'] = STATUS_LIMIT * (PAGES - 1)
         globals()['PAGE_NO'] = PAGES
     for download in list(download_dict.values())[STATUS_START:STATUS_LIMIT+STATUS_START]:
-        msg += f"<code><i>{escape(f'{download.name()}')}</code></i>\n\n"
-        msg += f"\n</b> <code>{download.status()}</code>"
+        msg += f"<code><i>{escape(f'{download.name()}')}</code></i>\n"
+        msg += f"\n</b><code>{download.status()}</code>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
             msg += f"\n<b>{get_progress_bar_string(download.progress())} » <code>{download.progress()}</code></b>"
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
@@ -183,11 +183,10 @@ def get_readable_message():
         buttons.ibutton("🪫", "status ref")
         buttons.ibutton("⫸", "status nex")
         button = buttons.build_menu(3)
-    msg += "═══❰ 𝐁𝐨𝐭 𝐌𝐢𝐫𝐫𝐨𝐫 𝐂𝐌𝐓 ❱═══"
-    msg += f"\n<b>🅲🄿🆄 :</b> <code>{cpu_percent()}%</code> | <b>🆁🄰🅼 :</b> <code>{virtual_memory().percent}%</code>"    
-    msg += f"\n<b>🆃🄳🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>🆃🅄🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
-    msg += f"\n<b>🄳🅸🆂🄺 :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>🅃🅸🅼🄴 :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
-    msg += f"\n<b>▼ :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>▲ :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
+    msg += "═══❰ 𝐁𝐨𝐭 𝐌𝐢𝐫𝐫𝐨𝐫 𝐂𝐌𝐓 ❱═══"      
+    msg += f"\n<b>TDL :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>TUL :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
+    msg += f"\n<b>DISK :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>TIME :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
+    msg += f"\n<b>⧩ :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>◭ :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
     return msg, button
 
 
