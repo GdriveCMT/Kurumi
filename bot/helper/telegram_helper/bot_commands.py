@@ -4,42 +4,38 @@ from bot import CMD_SUFFIX
 class _BotCommands:
     def __init__(self):
         self.StartCommand = f'start{CMD_SUFFIX}'
-        self.MirrorCommand = [f'yg{CMD_SUFFIX}', f'ym{CMD_SUFFIX}']
-        self.QbMirrorCommand = [f'ygqb{CMD_SUFFIX}', f'yqb{CMD_SUFFIX}']
-        self.YtdlCommand = [
-            f'ytdl{CMD_SUFFIX}', f'ygy{CMD_SUFFIX}', f'ywatch{CMD_SUFFIX}', f'yw{CMD_SUFFIX}']
-        self.LeechCommand = [f'ygleech{CMD_SUFFIX}', f'yl{CMD_SUFFIX}']
-        self.QbLeechCommand = [f'ygqbleech{CMD_SUFFIX}', f'yqbl{CMD_SUFFIX}']
-        self.YtdlLeechCommand = [
-            f'ytdlleech{CMD_SUFFIX}', f'ygyl{CMD_SUFFIX}', f'ywatchleech{CMD_SUFFIX}', f'ywl{CMD_SUFFIX}']
-        self.CloneCommand = [f'ygclone{CMD_SUFFIX}', f'ycl{CMD_SUFFIX}']
-        self.CountCommand = [f'ygcount{CMD_SUFFIX}', f'yco{CMD_SUFFIX}']
-        self.DeleteCommand = [f'ygdelete{CMD_SUFFIX}', f'ydel{CMD_SUFFIX}']
-        self.CancelMirror = [f'ygc{CMD_SUFFIX}', f'pc{CMD_SUFFIX}']
-        self.CancelAllCommand = [f'ygcancelall{CMD_SUFFIX}', f'yca{CMD_SUFFIX}']
-        self.ListCommand = [f'yglist{CMD_SUFFIX}', f'yli{CMD_SUFFIX}']
-        self.SearchCommand = [f'ygsearch{CMD_SUFFIX}', f'yse{CMD_SUFFIX}']
-        self.StatusCommand = [f'ygstatus{CMD_SUFFIX}', f'ysta{CMD_SUFFIX}']
-        self.UsersCommand = [f'ygusers{CMD_SUFFIX}', f'yus{CMD_SUFFIX}']
-        self.AuthorizeCommand = [f'ygauthorize{CMD_SUFFIX}', f'yau{CMD_SUFFIX}']
-        self.UnAuthorizeCommand = [
-            f'unauthorize{CMD_SUFFIX}', f'ygua{CMD_SUFFIX}']
-        self.AddSudoCommand = [f'ygaddsudo{CMD_SUFFIX}', f'yas{CMD_SUFFIX}']
-        self.RmSudoCommand = [f'ygrmsudo{CMD_SUFFIX}', f'yrs{CMD_SUFFIX}']
-        self.PingCommand = [f'ygping{CMD_SUFFIX}', f'yp{CMD_SUFFIX}']
-        self.RestartCommand = [f'ygrestart{CMD_SUFFIX}', f'yr{CMD_SUFFIX}']
-        self.StatsCommand = [f'ygstats{CMD_SUFFIX}', f'ysts{CMD_SUFFIX}']
-        self.HelpCommand = [f'yghelp{CMD_SUFFIX}', f'yh{CMD_SUFFIX}']
-        self.LogCommand = [f'yglog{CMD_SUFFIX}', f'ylo{CMD_SUFFIX}']
-        self.ShellCommand = [f'ygshell{CMD_SUFFIX}', f'ysh{CMD_SUFFIX}']
-        self.SpeedCommand = [f'ygspeedtest{CMD_SUFFIX}', f'ysp{CMD_SUFFIX}']
-        self.EvalCommand = [f'ygeval{CMD_SUFFIX}', f'yev{CMD_SUFFIX}']
-        self.ExecCommand = [f'ygexec{CMD_SUFFIX}', f'yex{CMD_SUFFIX}']
-        self.ClearLocalsCommand = [f'ygclearlocals{CMD_SUFFIX}', f'yclo{CMD_SUFFIX}']
-        self.BotSetCommand = [f'ygbsetting{CMD_SUFFIX}', f'ybset{CMD_SUFFIX}']
-        self.UserSetCommand = [f'ygusetting{CMD_SUFFIX}', f'yuset{CMD_SUFFIX}']
-        self.BtSelectCommand = [f'ygbtsel{CMD_SUFFIX}', f'ybts{CMD_SUFFIX}']
-        self.RssCommand = f'ygrss{CMD_SUFFIX}'
+        self.MirrorCommand = [f'mirror{CMD_SUFFIX}', f'm{CMD_SUFFIX}']
+        self.QbMirrorCommand = [f'qbmirror{CMD_SUFFIX}', f'qm{CMD_SUFFIX}']
+        self.YtdlCommand = [f'ytdl{CMD_SUFFIX}', f'y{CMD_SUFFIX}']
+        self.LeechCommand = [f'leech{CMD_SUFFIX}', f'l{CMD_SUFFIX}']
+        self.QbLeechCommand = [f'qbleech{CMD_SUFFIX}', f'ql{CMD_SUFFIX}']
+        self.YtdlLeechCommand = [f'ytdlleech{CMD_SUFFIX}', f'yl{CMD_SUFFIX}']
+        self.CloneCommand = f'clone{CMD_SUFFIX}'
+        self.CountCommand = f'count{CMD_SUFFIX}'
+        self.DeleteCommand = f'del{CMD_SUFFIX}'
+        self.CancelMirror = f'cancel{CMD_SUFFIX}'
+        self.CancelAllCommand = f'cancelall{CMD_SUFFIX}'
+        self.ListCommand = f'list{CMD_SUFFIX}'
+        self.SearchCommand = f'search{CMD_SUFFIX}'
+        self.StatusCommand = f'status{CMD_SUFFIX}'
+        self.UsersCommand = f'users{CMD_SUFFIX}'
+        self.AuthorizeCommand = f'authorize{CMD_SUFFIX}'
+        self.UnAuthorizeCommand = f'unauthorize{CMD_SUFFIX}'
+        self.AddSudoCommand = f'addsudo{CMD_SUFFIX}'
+        self.RmSudoCommand = f'rmsudo{CMD_SUFFIX}'
+        self.PingCommand = f'ping{CMD_SUFFIX}'
+        self.RestartCommand = f'restart{CMD_SUFFIX}'
+        self.StatsCommand = f'stats{CMD_SUFFIX}'
+        self.HelpCommand = f'help{CMD_SUFFIX}'
+        self.LogCommand = f'log{CMD_SUFFIX}'
+        self.ShellCommand = f'shell{CMD_SUFFIX}'
+        self.EvalCommand = f'eval{CMD_SUFFIX}'
+        self.ExecCommand = f'exec{CMD_SUFFIX}'
+        self.ClearLocalsCommand = f'clearlocals{CMD_SUFFIX}'
+        self.BotSetCommand = f'bsetting{CMD_SUFFIX}'
+        self.UserSetCommand = f'usetting{CMD_SUFFIX}'
+        self.BtSelectCommand = f'btsel{CMD_SUFFIX}'
+        self.RssCommand = f'rss{CMD_SUFFIX}'
 
 
 BotCommands = _BotCommands()
