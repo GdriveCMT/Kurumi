@@ -121,13 +121,13 @@ def get_readable_message():
         globals()['STATUS_START'] = STATUS_LIMIT * (PAGES - 1)
         globals()['PAGE_NO'] = PAGES
     for download in list(download_dict.values())[STATUS_START:STATUS_LIMIT+STATUS_START]:
-        msg += f"<code>{escape(f'{download.name()}')}</code>"
+        msg += f"<code>{escape(f'{download.name()}')}</code></i>\n\n"
+        msg += f"\n</b> <code>{download.status()}</code>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
             msg += f"\n<b>{get_progress_bar_string(download.progress())}» <code>{download.progress()}</code></b>"
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
                 msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
-            else:
-                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
+            else:                
             msg += f"\n<b>Proses :</b> <code>{download.processed_bytes()}</code> dr <code>{download.size()}</code>"
             msg += f"\n<b>Kec :</b> <code>{download.speed()}</code> | <b>ETA :</b> <code>{download.eta()}</code>"
             if hasattr(download, 'seeders_num'):
