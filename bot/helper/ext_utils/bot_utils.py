@@ -106,8 +106,8 @@ def get_progress_bar_string(pct):
     pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
     cFull = int(p // 8)
-    p_str = '◕' * cFull
-    p_str += '◔' * (12 - cFull)
+    p_str = '█' * cFull
+    p_str += '▒' * (12 - cFull)
     return f"{p_str}"
 
 
@@ -125,33 +125,33 @@ def get_readable_message():
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
             msg += f"\n<b>{get_progress_bar_string(download.progress())}» <code>{download.progress()}</code></b>"
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>┌┤Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>├ Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>├ Proses :</b> <code>{download.processed_bytes()}</code> dr <code>{download.size()}</code>"
-            msg += f"\n<b>├ Kec :</b> <code>{download.speed()}</code> | <b>ETA :</b> <code>{download.eta()}</code>"
+                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
+            msg += f"\n<b>Proses :</b> <code>{download.processed_bytes()}</code> dr <code>{download.size()}</code>"
+            msg += f"\n<b>Kec :</b> <code>{download.speed()}</code> | <b>ETA :</b> <code>{download.eta()}</code>"
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += f"\n<b>├ Seeders :</b> <code>{download.seeders_num()}</code> | <b>Leechers :</b> <code>{download.leechers_num()}</code>"
+                    msg += f"\n<b>Seeders :</b> <code>{download.seeders_num()}</code> | <b>Leechers :</b> <code>{download.leechers_num()}</code>"
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>┌ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>┌ Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>├ Ukuran :</b> <code>{download.size()}</code>"
-            msg += f"\n<b>├ Kec :</b> <code>{download.upload_speed()}</code> | <b>Diupload :</b> <code>{download.uploaded_bytes()}</code>"
-            msg += f"\n<b>├ Ratio :</b> <code>{download.ratio()}</code> | <b>Waktu :</b> <code>{download.seeding_time()}</code>"
+                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
+            msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
+            msg += f"\n<b>Kec :</b> <code>{download.upload_speed()}</code> | <b>Diupload :</b> <code>{download.uploaded_bytes()}</code>"
+            msg += f"\n<b>Ratio :</b> <code>{download.ratio()}</code> | <b>Waktu :</b> <code>{download.seeding_time()}</code>"
         else:
             if download.message.chat.type.name in ['SUPERGROUP', 'CHANNEL']:
-                msg += f"\n<b>┌ Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
+                msg += f"\n<b>Status :</b> <a href='{download.message.link}'>{download.status()}</a>"
             else:
-                msg += f"\n<b>┌ Status :</b> <code>{download.status()}</code>"
-            msg += f"\n<b>├ Ukuran :</b> <code>{download.size()}</code>"
+                msg += f"\n<b>Status :</b> <code>{download.status()}</code>"
+            msg += f"\n<b>Ukuran :</b> <code>{download.size()}</code>"
         # <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>
-        msg += f"\n<b>├ User :</b> <code>{download.message.from_user.first_name}</code> | <b>ID :</b> <code>{download.message.from_user.id}</code>"
-        msg += f"\n<b>└ Stop :</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
+        msg += f"\n<b>User :</b> <code>{download.message.from_user.first_name}</code> | <b>ID :</b> <code>{download.message.from_user.id}</code>"
+        msg += f"\n<b>Stop :</b> <code>/{BotCommands.CancelMirror[0]} {download.gid()}</code>\n\n"
     if len(msg) == 0:
         return None, None
     dl_speed = 0
