@@ -159,8 +159,6 @@ async def stats(_, message):
 <b>Quotes       :</b> 
 <code>{get_quotes()}</code>
 </pre>
-
-<b><code>PEA MASAMBA</b></code>
 '''
     await sendMessage(message, stats)
 
@@ -168,8 +166,8 @@ async def stats(_, message):
 async def start(client, message):
     buttons = ButtonMaker()
     buttons.ubutton(
-        "Website", "https://www.comelmuewa84.eu.org/")
-    buttons.ubutton("Group", "https://t.me/CollectionMovie_Subtitles")
+        "Owner", "https://t.me/save_usdt")
+    buttons.ubutton("Group", "https://t.me/arakurumi")
     reply_markup = buttons.build_menu(2)
     if await CustomFilters.authorized(client, message):
         start_string = f'''
@@ -188,7 +186,7 @@ Enjoy :D
 
 
 async def restart(_, message):
-    restart_message = await sendMessage(message, "Restarting...")
+    restart_message = await sendMessage(message, "<b>Restarting...</b>")
     if scheduler.running:
         scheduler.shutdown(wait=False)
     for interval in [QbInterval, Interval]:
@@ -264,7 +262,7 @@ async def restart_notification():
 
     async def send_incompelete_task_message(cid, msg):
         try:
-            if msg.startswith('<b>Bot berhasil di restart ya!</b>'):
+            if msg.startswith('<b>Bot berhasil dimulai ulang!</b>'):
                 await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text=msg)
                 await aioremove(".restartmsg")
             else:
@@ -278,15 +276,13 @@ async def restart_notification():
         if notifier_dict := await DbManger().get_incomplete_tasks():
             for cid, data in notifier_dict.items():
                 msg = f"""
-{'<b>Bot berhasil di restart ya!</b>' if cid == chat_id else '<b>Bot dimulai ulang!</b>'}
+{'<b>Bot berhasil dimulai ulang!</b>' if cid == chat_id else '<b>Bot dimulai ulang!</b>'}
 <pre languange="bash"><b>Hari      :</b> <code>{now.strftime('%A')}</code>
 <b>Tanggal   :</b> <code>{now.strftime('%d %B %Y')}</code>
 <b>Waktu     :</b> <code>{now.strftime('%H:%M:%S WIB')}</code>
 <b>Quotes    :</b>
 <code>{get_quotes()}</code>
-</pre>     
-
-<b><code>PEA MASAMBA</b></code>
+</pre>           
 """
                 if data.items():
                     msg += f"<b>Tugas yang belum selesai :</b>"
@@ -310,8 +306,6 @@ async def restart_notification():
 <b>Quotes    :</b>
 <code>{get_quotes()}</code>
 </pre>           
-
-<b><code>PEA MASAMBA</b></code>
 """
             await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text=msg)
         except:
