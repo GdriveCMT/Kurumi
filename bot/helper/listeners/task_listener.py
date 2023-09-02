@@ -125,7 +125,7 @@ class MirrorLeechListener:
         if self.join and await aiopath.isdir(dl_path):
             await join_files(dl_path)
 
-        if self.isLeech or self.compress:
+        if self.isLeech:
             LEECH_SPLIT_SIZE = self.user_dict.get('split_size') or config_dict['LEECH_SPLIT_SIZE']
             if self.upDest.startswith('b:') and LEECH_SPLIT_SIZE > 2097152000:
                 LEECH_SPLIT_SIZE = 2097152000
@@ -138,7 +138,9 @@ class MirrorLeechListener:
 
             MAX_SIZE = MAX_SPLIT_SIZE if user_leech else 2097152000
             LEECH_SPLIT_SIZE = min(LEECH_SPLIT_SIZE, MAX_SIZE)
-
+        else:
+            LEECH_SPLIT_SIZE = 0
+            
         if self.extract:
             pswd = self.extract if isinstance(self.extract, str) else ''
             try:
@@ -347,16 +349,12 @@ class MirrorLeechListener:
             await DbManger().rm_complete_task(self.message.link)
         msg = f"<b>Nama :</b> <code>{escape(name)}</code>"
         msg += f"\n\n<b>Ukuran :</b> <code>{get_readable_file_size(size)}</code>"
-        msg += f"\n\n</b>Hasil mirror sudah kami pindahkan<a href='https://t.me/peamasambamirror'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>"
-        msg += f"\n\n</b>Join Group Google Drive CMT<a href='https://groups.google.com/g/jagoan-masamba1984'> 𝑫𝒊𝒔𝒊𝒏𝒊</a> </b>"
-        msg += f'\n\n<b>𝐏𝐄𝐀 𝐌𝐀𝐒𝐀𝐌𝐁𝐀\n\n'
         LOGGER.info(f'Task Done: {name}')
         if self.isLeech:
             msg += f'\n\n<b>Jumlah File :</b> <code>{folders}</code>'
             if mime_type != 0:
                 msg += f'\n\n<b>File Rusak :</b> <code>{mime_type}</code>'
             msg += f'\n\n<b>Oleh :</b> {self.tag}\n\n'
-            msg += f'\n\n<b>𝐏𝐄𝐀 𝐌𝐀𝐒𝐀𝐌𝐁𝐀\n\n'
             if not files:
                 await sendMessage(self.message, msg)
             else:
