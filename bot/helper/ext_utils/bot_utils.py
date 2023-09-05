@@ -28,17 +28,17 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Upload"
-    STATUS_DOWNLOADING = "Download"
-    STATUS_CLONING = "Clone"
-    STATUS_QUEUEDL = "QueueDl"
-    STATUS_QUEUEUP = "QueueUp"
-    STATUS_PAUSED = "Pause"
-    STATUS_ARCHIVING = "Archive"
-    STATUS_EXTRACTING = "Extract"
-    STATUS_SPLITTING = "Split"
-    STATUS_CHECKING = "CheckUp"
-    STATUS_SEEDING = "Seed"
+    STATUS_UPLOADING = "Mengunggah..."
+    STATUS_DOWNLOADING = "Mengunduh..."
+    STATUS_CLONING = "Mengclone..."
+    STATUS_QUEUEDL = "Menunggu antrian download..."
+    STATUS_QUEUEUP = "Menunggu antrian upload..."
+    STATUS_PAUSED = "Dihentikan."
+    STATUS_ARCHIVING = "Mengarsip..."
+    STATUS_EXTRACTING = "Mengekstrak..."
+    STATUS_SPLITTING = "Membagi..."
+    STATUS_CHECKING = "Mengecek..."
+    STATUS_SEEDING = "Mengeseed..."
 
 
 class setInterval:
@@ -94,11 +94,11 @@ def bt_selection_buttons(id_):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Pencari Drive Pea Masamba', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(title='Pencari Drive KQRM', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("🔦 VIEW", f"https://telegra.ph/{path[0]}")
+    buttons.ubutton("🔎 VIEW", f"https://telegra.ph/{path[0]}")
     return buttons.build_menu(1)
 
 
@@ -179,6 +179,30 @@ def get_readable_message():
     msg += f"\n<b>TDL :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>TUL :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
     msg += f"\n<b>DISK :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>TIME :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
     msg += f"\n<b>⧩ :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>◭ :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
+    return msg, button
+    if len(msg) == 0:
+        return None, None
+    dl_speed = 0
+    up_speed = 0
+    for download in download_dict.values():
+        tstatus = download.status()
+        if tstatus == MirrorStatus.STATUS_DOWNLOADING:
+            dl_speed += text_size_to_bytes(download.speed())
+        elif tstatus == MirrorStatus.STATUS_UPLOADING:
+            up_speed += text_size_to_bytes(download.speed())
+        elif tstatus == MirrorStatus.STATUS_SEEDING:
+            up_speed +=text_size_to_bytes(download.upload_speed())
+    if tasks > STATUS_LIMIT:
+        msg += f"<b>Halaman :</b> <code>{PAGE_NO}/{PAGES}</code> | <b>Total Tugas :</b> <code>{tasks}</code>\n"
+        buttons = ButtonMaker()
+        buttons.ibutton("⏪", "status pre")
+        buttons.ibutton("♻️", "status ref")
+        buttons.ibutton("⏩", "status nex")
+        button = buttons.build_menu(3)
+    msg += f"\n<b>🅲🄿🆄 :</b> <code>{cpu_percent()}%</code> | <b>🆁🄰🅼 :</b> <code>{virtual_memory().percent}%</code>"
+    msg += f"\n<b>🅳🅻🆂 :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>🆄🅻🆂 :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
+    msg += f"\n<b>🆃🅳🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>🆃🆄🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
+    msg += f"\n<b>🅳🅸🆂🅺 :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>🆃🅸🅼🅴 :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
     return msg, button
 
 
@@ -331,6 +355,20 @@ async def sync_to_async(func, *args, wait=True, **kwargs):
 def async_to_sync(func, *args, wait=True, **kwargs):
     future = run_coroutine_threadsafe(func(*args, **kwargs), bot_loop)
     return future.result() if wait else future
+
+
+def text_size_to_bytes(size_text):
+    size = 0
+    size_text = size_text.lower()
+    if 'k' in size_text:
+        size += float(size_text.split('k')[0]) * 1024
+    elif 'm' in size_text:
+        size += float(size_text.split('m')[0]) * 1048576
+    elif 'g' in size_text:
+        size += float(size_text.split('g')[0]) *1073741824 
+    elif 't' in size_text:
+        size += float(size_text.split('t')[0]) *1099511627776 
+    return size
 
 
 def new_thread(func):
