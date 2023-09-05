@@ -63,8 +63,6 @@ You can set start and end of the links from the bulk with -b start:end or only e
 
 Check all supported <a href='https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md'>SITES</a>.
 Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L184'>FILE</a>.
-
-<b>By @peamasamba</b>
 """
 
 MIRROR_HELP_MESSAGE = f"""
@@ -79,6 +77,9 @@ Note: Doesn't work with torrents.
 
 <b>Direct link authorization</b>: -au -ap
 <code>/{BotCommands.MirrorCommand[0]}</code> link -au username -ap password
+
+<b>Direct link custom headers</b>: -h
+<code>/cmd</code> link -h Key: value Key1: value1
 
 <b>Extract/Zip</b>: -e -z
 <code>/{BotCommands.MirrorCommand[0]}</code> link -e password (extract password protected)
@@ -152,8 +153,6 @@ Super: <code>https://t.me/c/channel_id/message_id</code>
 
 <b>NOTES:</b>
 1. Commands that start with <b>qb</b> are ONLY for torrents.
-
-<b>By @peamasamba</b>
 """
 
 LEECH_HELP_MESSAGE = f"""
@@ -168,6 +167,9 @@ Note: Doesn't work with torrents.
 
 <b>Direct link authorization</b>: -au -ap
 <code>/{BotCommands.LeechCommand[0]}</code> link -au username -ap password
+
+<b>Direct link custom headers</b>: -h
+<code>/cmd</code> link -h Key: value Key1: value1
 
 <b>Extract/Zip</b>: -e -z
 <code>/{BotCommands.LeechCommand[0]}</code> link -e password (extract password protected)
@@ -241,8 +243,6 @@ Super: <code>https://t.me/c/channel_id/message_id</code>
 
 <b>NOTES:</b>
 1. Commands that start with <b>qb</b> are ONLY for torrents.
-
-<b>By @peamasamba</b>
 """
 
 QBMIRROR_HELP_MESSAGE = f"""
@@ -330,8 +330,6 @@ Super: <code>https://t.me/c/channel_id/message_id</code>
 
 <b>NOTES:</b>
 1. Commands that start with <b>qb</b> are ONLY for torrents.
-
-<b>By @peamasamba</b>
 """
 
 QBLEECH_HELP_MESSAGE = f"""
@@ -419,8 +417,6 @@ Super: <code>https://t.me/c/channel_id/message_id</code>
 
 <b>NOTES:</b>
 1. Commands that start with <b>qb</b> are ONLY for torrents.
-
-<b>By @peamasamba</b>
 """
 
 RSS_HELP_MESSAGE = """
@@ -459,6 +455,4 @@ Send Gdrive|Gdot|Filepress|Filebee|Appdrive|Gdflix link or rclone path along wit
 <code>/{BotCommands.CloneCommand[0]}</code> rcl/rclone_path -up rcl/rclone_path/rc -rcf flagkey:flagvalue|flagkey|flagkey:flagvalue
 
 Note: If -up not specified then rclone destination will be the RCLONE_PATH from config.env
-
-<b>By @peamasamba</b>
 """
