@@ -174,37 +174,11 @@ def get_readable_message():
         buttons.ibutton("⫷", "status pre")
         buttons.ibutton("🪫", "status ref")
         buttons.ibutton("⫸", "status nex")
-        button = buttons.build_menu(3)
-    msg += "═══❰ 𝐓𝐞𝐬𝐭𝐢𝐧𝐠 𝐁𝐨𝐭 ❱═══"      
+        button = buttons.build_menu(3)    
     msg += f"\n<b>TDL :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>TUL :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
     msg += f"\n<b>DISK :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>TIME :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
     msg += f"\n<b>⧩ :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>◭ :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
-    return msg, button
-    if len(msg) == 0:
-        return None, None
-    dl_speed = 0
-    up_speed = 0
-    for download in download_dict.values():
-        tstatus = download.status()
-        if tstatus == MirrorStatus.STATUS_DOWNLOADING:
-            dl_speed += text_size_to_bytes(download.speed())
-        elif tstatus == MirrorStatus.STATUS_UPLOADING:
-            up_speed += text_size_to_bytes(download.speed())
-        elif tstatus == MirrorStatus.STATUS_SEEDING:
-            up_speed +=text_size_to_bytes(download.upload_speed())
-    if tasks > STATUS_LIMIT:
-        msg += f"<b>Halaman :</b> <code>{PAGE_NO}/{PAGES}</code> | <b>Total Tugas :</b> <code>{tasks}</code>\n"
-        buttons = ButtonMaker()
-        buttons.ibutton("⏪", "status pre")
-        buttons.ibutton("♻️", "status ref")
-        buttons.ibutton("⏩", "status nex")
-        button = buttons.build_menu(3)
-    msg += f"\n<b>🅲🄿🆄 :</b> <code>{cpu_percent()}%</code> | <b>🆁🄰🅼 :</b> <code>{virtual_memory().percent}%</code>"
-    msg += f"\n<b>🅳🅻🆂 :</b> <code>{get_readable_file_size(dl_speed)}/s</code> | <b>🆄🅻🆂 :</b> <code>{get_readable_file_size(up_speed)}/s</code>"
-    msg += f"\n<b>🆃🅳🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_recv)}</code> | <b>🆃🆄🅻 :</b> <code>{get_readable_file_size(net_io_counters().bytes_sent)}</code>"
-    msg += f"\n<b>🅳🅸🆂🅺 :</b> <code>{get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}</code> | <b>🆃🅸🅼🅴 :</b> <code>{get_readable_time(time() - botStartTime)}</code>"
-    return msg, button
-
+    return msg, button   
 
 async def turn_page(data):
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
