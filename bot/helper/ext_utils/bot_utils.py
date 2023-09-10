@@ -28,18 +28,17 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Mengunggah..."
-    STATUS_DOWNLOADING = "Mengunduh..."
-    STATUS_CLONING = "Mengclone..."
-    STATUS_QUEUEDL = "Menunggu antrian download..."
-    STATUS_QUEUEUP = "Menunggu antrian upload..."
-    STATUS_PAUSED = "Dihentikan."
-    STATUS_ARCHIVING = "Mengarsip..."
-    STATUS_EXTRACTING = "Mengekstrak..."
-    STATUS_SPLITTING = "Membagi..."
-    STATUS_CHECKING = "Mengecek..."
-    STATUS_SEEDING = "Mengeseed..."
-
+    STATUS_UPLOADING = "Upload"
+    STATUS_DOWNLOADING = "Download"
+    STATUS_CLONING = "Clone"
+    STATUS_QUEUEDL = "QueueDl"
+    STATUS_QUEUEUP = "QueueUp"
+    STATUS_PAUSED = "Pause"
+    STATUS_ARCHIVING = "Archive"
+    STATUS_EXTRACTING = "Extract"
+    STATUS_SPLITTING = "Split"
+    STATUS_CHECKING = "CheckUp"
+    STATUS_SEEDING = "Seed"
 
 class setInterval:
     def __init__(self, interval, action):
