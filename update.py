@@ -18,15 +18,13 @@ basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 
 if not ospath.exists('config.env'):
     CONFIG_FILE_URL = environ.get('CONFIG_FILE_URL', '')
-    try:
-        res = rget(CONFIG_FILE_URL)
-        if res.status_code == 200:
+    if len(CONFIG_FILE_URL) != 0:
+        try:
+            res = rget(CONFIG_FILE_URL).content
             with open('config.env', 'wb+') as f:
-                f.write(res.content)
-        else:
-            log_error(f"Failed when download config.env => {res.status_code}")
-    except Exception as e:
-        log_error(f"Failed when download config.env => {e}")
+                f.write(res)
+        except Exception as e:
+            log_error(f"Failed when download config.env => {e}")
 
 load_dotenv('config.env', override=True)
 
@@ -74,8 +72,8 @@ if UPSTREAM_REPO is not None:
         srun(["rm", "-rf", ".git"])
 
     update = srun([f"git init -q \
-                     && git config --global user.email kqruumi@gmail.com \
-                     && git config --global user.name KQRM \
+                     && git config --global user.email ahmadbakil301@gmail.com \
+                     && git config --global user.name PEA MASAMBA \
                      && git add . \
                      && git commit -sm update -q \
                      && git remote add origin {UPSTREAM_REPO} \
