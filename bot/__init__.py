@@ -1,17 +1,16 @@
 from tzlocal import get_localzone
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from pyrogram import Client as tgClient, enums
+from pyrogram import Client as tgClient, enums, __version__ as prv
 from pymongo import MongoClient
 from asyncio import Lock
 from dotenv import load_dotenv, dotenv_values
 from threading import Thread
 from time import sleep, time
-from subprocess import Popen, run as srun
+from subprocess import Popen, run as srun, check_output
 from os import remove as osremove, path as ospath, environ, getcwd
 from aria2p import API as ariaAPI, Client as ariaClient
 from qbittorrentapi import Client as qbClient
-
-# from faulthandler import enable as faulthandler_enable
+from faulthandler import enable as faulthandler_enable
 from socket import setdefaulttimeout
 from logging import (
     getLogger,
@@ -25,20 +24,24 @@ from logging import (
     ERROR,
 )
 from uvloop import install
+install()
 
 # faulthandler_enable()
-install()
+
 setdefaulttimeout(600)
 
-getLogger("qbittorrentapi").setLevel(INFO)
-getLogger("requests").setLevel(INFO)
 getLogger("urllib3").setLevel(INFO)
+getLogger("requests").setLevel(INFO)
+getLogger("qbittorrentapi").setLevel(INFO)
 getLogger("pyrogram").setLevel(ERROR)
+getLogger("gunicorn").setLevel(ERROR)
 
 botStartTime = time()
 
 basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format="{asctime} - [{levelname[0]}] {name} [{module}:{lineno}] - {message}",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    style="{",
     handlers=[FileHandler("log.txt"), StreamHandler()],
     level=INFO,
 )
@@ -62,6 +65,21 @@ queued_up = {}
 non_queued_dl = set()
 non_queued_up = set()
 multi_tags = set()
+
+# Version Check
+try:
+    arv = check_output(["chrome --v"], shell=True).decode().split("\n")[0].split(" ")[2] 
+    ffv = check_output(["opera -version | grep 'ffmpeg version' | sed -e 's/ffmpeg version //' -e 's/[^0-9.].*//'"], shell=True).decode().replace("\n", "")
+    gav = check_output(["pip show google-api-python-client | grep Version"], shell=True).decode().split(" ", 1)[1].replace("\n", "")
+    msv = check_output(["pip show megasdk | grep Version"], shell=True).decode().split(" ", 1)[1].replace("\n", "")
+    p7v = check_output(["7z | grep Version"], shell=True).decode().split(" ")[2]
+    prv = prv
+    rcv = check_output(["edge --version"], shell=True).decode().split("\n")[0].split(" ")[1]
+    qbv = check_output(["firefox --version"], shell=True).decode().split(" ", 1)[1].replace("\n", "")
+    ytv = check_output(["yt-dlp --version"], shell=True).decode().split("\n")[0]
+except Exception as e:
+    LOGGER.warning(f"Failed when get apps version! : {e}")
+    arv, ffv, gav, msv, p7v, prv, rcv, qbv, ytv = "", "", "", "", "", "", "", "", ""
 
 try:
     if bool(environ.get("_____REMOVE_THIS_LINE_____")):
@@ -114,7 +132,10 @@ if DATABASE_URL:
             del pf_dict["_id"]
             for key, value in pf_dict.items():
                 if value:
-                    file_ = key.replace("__", ".")
+                    if key == "list_drives_txt":
+                        file_ = "list_drives.txt"
+                    else:
+                        file_ = key.replace("_", ".")
                     with open(file_, "wb+") as f:
                         f.write(value)
         if a2c_options := db.settings.aria2c.find_one({"_id": bot_id}):
@@ -151,6 +172,11 @@ if len(TELEGRAM_HASH) == 0:
     log_error("TELEGRAM_HASH variable is missing! Exiting now")
     exit(1)
 
+# Using different TELEGRAM_API  & TELEGRAM_HASH for USER_SESSION_STRING
+TELEGRAM_API_PREMIUM = environ.get("TELEGRAM_API_PREMIUM", "")
+
+TELEGRAM_HASH_PREMIUM = environ.get("TELEGRAM_HASH_PREMIUM", "")
+
 GDRIVE_ID = environ.get("GDRIVE_ID", "")
 if len(GDRIVE_ID) == 0:
     GDRIVE_ID = ""
@@ -177,7 +203,11 @@ AUTHORIZED_CHATS = environ.get("AUTHORIZED_CHATS", "")
 if len(AUTHORIZED_CHATS) != 0:
     aid = AUTHORIZED_CHATS.split()
     for id_ in aid:
-        user_data[int(id_.strip())] = {"is_auth": True}
+        if ":" in id_:
+            user_data[int(id_.split(":")[0].strip())] = {
+                "thread_id": int(id_.split(":")[1].strip()), "is_auth": True}
+        else:
+            user_data[int(id_.strip())] = {"is_auth": True}
 
 SUDO_USERS = environ.get("SUDO_USERS", "")
 if len(SUDO_USERS) != 0:
@@ -195,33 +225,51 @@ if len(EXTENSION_FILTER) > 0:
 USER_SESSION_STRING = environ.get("USER_SESSION_STRING", "")
 if len(USER_SESSION_STRING) != 0:
     log_info("Creating client from USER_SESSION_STRING")
-    user = tgClient(
-        "user",
-        TELEGRAM_API,
-        TELEGRAM_HASH,
-        session_string=USER_SESSION_STRING,
-        parse_mode=enums.ParseMode.HTML,
-        max_concurrent_transmissions=10,
-    ).start()
+    if len(TELEGRAM_API_PREMIUM) != 0 and len(TELEGRAM_HASH_PREMIUM) != 0:
+        log_info("Using another Telegram Api & Telegram Hash for User Session...")
+        TELEGRAM_API_PREMIUM = int(TELEGRAM_API_PREMIUM)
+        user = tgClient(
+            "user", 
+            TELEGRAM_API_PREMIUM, 
+            TELEGRAM_HASH_PREMIUM, 
+            session_string=USER_SESSION_STRING,
+            parse_mode=enums.ParseMode.HTML, 
+            max_concurrent_transmissions=10
+        ).start()
+    else:
+        user = tgClient(
+            "user", 
+            TELEGRAM_API, 
+            TELEGRAM_HASH, 
+            session_string=USER_SESSION_STRING,
+            parse_mode=enums.ParseMode.HTML, 
+            max_concurrent_transmissions=10
+        ).start()
     IS_PREMIUM_USER = user.me.is_premium
 else:
-    IS_PREMIUM_USER = False
     user = ""
-
+    IS_PREMIUM_USER = False
+    
 MEGA_EMAIL = environ.get("MEGA_EMAIL", "")
 MEGA_PASSWORD = environ.get("MEGA_PASSWORD", "")
 if len(MEGA_EMAIL) == 0 or len(MEGA_PASSWORD) == 0:
-    log_warning("MEGA Credentials not provided!")
+    log_warning("MEGA Credentials not provided! Using Free Account...")
     MEGA_EMAIL = ""
     MEGA_PASSWORD = ""
 
+UPTOBOX_TOKEN = environ.get("UPTOBOX_TOKEN", "")
+if len(UPTOBOX_TOKEN) == 0:
+    log_warning("UPTOBOX Credentials not provided! Using Free Account...")
+    UPTOBOX_TOKEN = ""
 
 FILELION_API = environ.get("FILELION_API", "")
 if len(FILELION_API) == 0:
+    log_warning("FILELION Credentials not provided!")
     FILELION_API = ""
 
 STREAMWISH_API = environ.get("STREAMWISH_API", "")
 if len(STREAMWISH_API) == 0:
+    log_warning("STREAMWISH Credentials not provided!")
     STREAMWISH_API = ""
 
 INDEX_URL = environ.get("INDEX_URL", "").rstrip("/")
@@ -241,13 +289,10 @@ if len(SEARCH_PLUGINS) == 0:
     SEARCH_PLUGINS = ""
 
 MAX_SPLIT_SIZE = 4194304000 if IS_PREMIUM_USER else 2097152000
+log_info(f"Max Split Size : {MAX_SPLIT_SIZE}")
 
 LEECH_SPLIT_SIZE = environ.get("LEECH_SPLIT_SIZE", "")
-if (
-    len(LEECH_SPLIT_SIZE) == 0
-    or int(LEECH_SPLIT_SIZE) > MAX_SPLIT_SIZE
-    or LEECH_SPLIT_SIZE == "2097152000"
-):
+if len(LEECH_SPLIT_SIZE) == 0 or int(LEECH_SPLIT_SIZE) > MAX_SPLIT_SIZE or LEECH_SPLIT_SIZE == "2097152000":
     LEECH_SPLIT_SIZE = MAX_SPLIT_SIZE
 else:
     LEECH_SPLIT_SIZE = int(LEECH_SPLIT_SIZE)
@@ -271,20 +316,19 @@ if len(YT_DLP_OPTIONS) == 0:
 SEARCH_LIMIT = environ.get("SEARCH_LIMIT", "")
 SEARCH_LIMIT = 0 if len(SEARCH_LIMIT) == 0 else int(SEARCH_LIMIT)
 
-LEECH_DUMP_CHAT = environ.get("LEECH_DUMP_CHAT", "")
-LEECH_DUMP_CHAT = "" if len(LEECH_DUMP_CHAT) == 0 else LEECH_DUMP_CHAT
-if LEECH_DUMP_CHAT.isdigit() or LEECH_DUMP_CHAT.startswith("-"):
-    LEECH_DUMP_CHAT = int(LEECH_DUMP_CHAT)
+LEECH_CHAT_ID = environ.get("LEECH_CHAT_ID", "")
+LEECH_CHAT_ID = "" if len(LEECH_CHAT_ID) == 0 else LEECH_CHAT_ID
+
+LOG_CHAT_ID = environ.get("LOG_CHAT_ID", "")
+LOG_CHAT_ID = "" if len(LOG_CHAT_ID) == 0 else LOG_CHAT_ID
 
 STATUS_LIMIT = environ.get("STATUS_LIMIT", "")
 STATUS_LIMIT = 10 if len(STATUS_LIMIT) == 0 else int(STATUS_LIMIT)
 
 CMD_SUFFIX = environ.get("CMD_SUFFIX", "")
 
-RSS_CHAT = environ.get("RSS_CHAT", "")
-RSS_CHAT = "" if len(RSS_CHAT) == 0 else RSS_CHAT
-if RSS_CHAT.isdigit() or RSS_CHAT.startswith("-"):
-    RSS_CHAT = int(RSS_CHAT)
+RSS_CHAT_ID = environ.get("RSS_CHAT_ID", "")
+RSS_CHAT_ID = "" if len(RSS_CHAT_ID) == 0 else int(RSS_CHAT_ID)
 
 RSS_DELAY = environ.get("RSS_DELAY", "")
 RSS_DELAY = 600 if len(RSS_DELAY) == 0 else int(RSS_DELAY)
@@ -328,13 +372,24 @@ MEDIA_GROUP = MEDIA_GROUP.lower() == "true"
 USER_TRANSMISSION = environ.get("USER_TRANSMISSION", "")
 USER_TRANSMISSION = USER_TRANSMISSION.lower() == "true" and IS_PREMIUM_USER
 
-BASE_URL_PORT = environ.get("BASE_URL_PORT", "")
-BASE_URL_PORT = 80 if len(BASE_URL_PORT) == 0 else int(BASE_URL_PORT)
+BASE_URL_PORT = environ.get("PORT")
+if not BASE_URL_PORT:
+    BASE_URL_PORT = environ.get("BASE_URL_PORT", "")
+    BASE_URL_PORT = 80 if len(BASE_URL_PORT) == 0 else int(BASE_URL_PORT)
 
 BASE_URL = environ.get("BASE_URL", "").rstrip("/")
 if len(BASE_URL) == 0:
-    log_warning("BASE_URL not provided!")
-    BASE_URL = ""
+    HEROKU_APP_NAME = environ.get("HEROKU_APP_NAME", "")
+    RENDER_APP_NAME = environ.get("RENDER_APP_NAME", "")
+    if not len(HEROKU_APP_NAME) == 0:
+        log_info("Using HEROKU_APP_NAME as BASE_URL!")
+        BASE_URL = "https://{HEROKU_APP_NAME}.herokuapp.com"
+    elif not len(RENDER_APP_NAME) == 0:
+        log_info("Using RENDER_APP_NAME as BASE_URL!")
+        BASE_URL = "https://{RENDER_APP_NAME}.onrender.com"     
+    else:
+        log_warning("BASE_URL not provided!")
+        BASE_URL = ""
 
 UPSTREAM_REPO = environ.get("UPSTREAM_REPO", "")
 if len(UPSTREAM_REPO) == 0:
@@ -349,7 +404,8 @@ if len(RCLONE_SERVE_URL) == 0:
     RCLONE_SERVE_URL = ""
 
 RCLONE_SERVE_PORT = environ.get("RCLONE_SERVE_PORT", "")
-RCLONE_SERVE_PORT = 8080 if len(RCLONE_SERVE_PORT) == 0 else int(RCLONE_SERVE_PORT)
+RCLONE_SERVE_PORT = 8080 if len(
+    RCLONE_SERVE_PORT) == 0 else int(RCLONE_SERVE_PORT)
 
 RCLONE_SERVE_USER = environ.get("RCLONE_SERVE_USER", "")
 if len(RCLONE_SERVE_USER) == 0:
@@ -358,6 +414,7 @@ if len(RCLONE_SERVE_USER) == 0:
 RCLONE_SERVE_PASS = environ.get("RCLONE_SERVE_PASS", "")
 if len(RCLONE_SERVE_PASS) == 0:
     RCLONE_SERVE_PASS = ""
+
 
 config_dict = {
     "AS_DOCUMENT": AS_DOCUMENT,
@@ -370,6 +427,8 @@ config_dict = {
     "DATABASE_URL": DATABASE_URL,
     "DEFAULT_UPLOAD": DEFAULT_UPLOAD,
     "DOWNLOAD_DIR": DOWNLOAD_DIR,
+    "LEECH_CHAT_ID": LEECH_CHAT_ID,
+    "LOG_CHAT_ID": LOG_CHAT_ID,
     "EQUAL_SPLITS": EQUAL_SPLITS,
     "EXTENSION_FILTER": EXTENSION_FILTER,
     "FILELION_API": FILELION_API,
@@ -377,7 +436,6 @@ config_dict = {
     "INCOMPLETE_TASK_NOTIFIER": INCOMPLETE_TASK_NOTIFIER,
     "INDEX_URL": INDEX_URL,
     "IS_TEAM_DRIVE": IS_TEAM_DRIVE,
-    "LEECH_DUMP_CHAT": LEECH_DUMP_CHAT,
     "LEECH_FILENAME_PREFIX": LEECH_FILENAME_PREFIX,
     "LEECH_SPLIT_SIZE": LEECH_SPLIT_SIZE,
     "MEDIA_GROUP": MEDIA_GROUP,
@@ -393,7 +451,7 @@ config_dict = {
     "RCLONE_SERVE_USER": RCLONE_SERVE_USER,
     "RCLONE_SERVE_PASS": RCLONE_SERVE_PASS,
     "RCLONE_SERVE_PORT": RCLONE_SERVE_PORT,
-    "RSS_CHAT": RSS_CHAT,
+    "RSS_CHAT_ID": RSS_CHAT_ID,
     "RSS_DELAY": RSS_DELAY,
     "SEARCH_API_LINK": SEARCH_API_LINK,
     "SEARCH_LIMIT": SEARCH_LIMIT,
@@ -405,14 +463,17 @@ config_dict = {
     "SUDO_USERS": SUDO_USERS,
     "TELEGRAM_API": TELEGRAM_API,
     "TELEGRAM_HASH": TELEGRAM_HASH,
+    "TELEGRAM_API_PREMIUM": TELEGRAM_API_PREMIUM,
+    "TELEGRAM_HASH_PREMIUM": TELEGRAM_HASH_PREMIUM,
     "TORRENT_TIMEOUT": TORRENT_TIMEOUT,
     "USER_TRANSMISSION": USER_TRANSMISSION,
     "UPSTREAM_REPO": UPSTREAM_REPO,
     "UPSTREAM_BRANCH": UPSTREAM_BRANCH,
+    "UPTOBOX_TOKEN": UPTOBOX_TOKEN,
     "USER_SESSION_STRING": USER_SESSION_STRING,
     "USE_SERVICE_ACCOUNTS": USE_SERVICE_ACCOUNTS,
     "WEB_PINCODE": WEB_PINCODE,
-    "YT_DLP_OPTIONS": YT_DLP_OPTIONS,
+    "YT_DLP_OPTIONS": YT_DLP_OPTIONS
 }
 
 if GDRIVE_ID:
@@ -432,20 +493,25 @@ if ospath.exists("list_drives.txt"):
             else:
                 INDEX_URLS.append("")
 
-if BASE_URL:
-    Popen(
-        f"gunicorn web.wserver:app --bind 0.0.0.0:{BASE_URL_PORT} --worker-class gevent",
-        shell=True,
+log_info("Running Web Server...")
+Popen(
+    f"gunicorn web.wserver:app --bind 0.0.0.0:{BASE_URL_PORT} --worker-class gevent", 
+    shell=True
     )
 
-srun(["qbittorrent-nox", "-d", f"--profile={getcwd()}"])
+log_info("Running QBittorrent...")
+srun(["firefox", "-d", f"--profile={getcwd()}"])
 if not ospath.exists(".netrc"):
     with open(".netrc", "w"):
         pass
 srun(["chmod", "600", ".netrc"])
 srun(["cp", ".netrc", "/root/.netrc"])
+
+log_info("Running Aria2...")
 srun(["chmod", "+x", "aria.sh"])
 srun("./aria.sh", shell=True)
+
+log_info("Set Up Service Accounts...")
 if ospath.exists("accounts.zip"):
     if ospath.exists("accounts"):
         srun(["rm", "-rf", "accounts"])
@@ -453,18 +519,27 @@ if ospath.exists("accounts.zip"):
     srun(["chmod", "-R", "777", "accounts"])
     osremove("accounts.zip")
 if not ospath.exists("accounts"):
+    log_warning("Service Accounts not found!")
     config_dict["USE_SERVICE_ACCOUNTS"] = False
 sleep(0.5)
 
-aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
+aria2 = ariaAPI(
+    ariaClient(
+        host="http://localhost", 
+        port=6800, secret=""
+    )
+)
+
+log_info("Set Up auto Alive...")
+Popen(["python3", "alive.py"])
 
 
 def get_client():
     return qbClient(
-        host="localhost",
-        port=8090,
-        VERIFY_WEBUI_CERTIFICATE=False,
-        REQUESTS_ARGS={"timeout": (30, 60)},
+        host="localhost", 
+        port=8090, 
+        VERIFY_WEBUI_CERTIFICATE=False, 
+        REQUESTS_ARGS={"timeout": (30, 60)}
     )
 
 
@@ -479,32 +554,33 @@ def aria2c_init():
         sleep(10)
         aria2.remove(downloads, force=True, files=True, clean=True)
     except Exception as e:
-        log_error(f"Aria2c initializing error: {e}")
+        log_error(f"Aria2c initializing error : {e}")
 
 
 Thread(target=aria2c_init).start()
 sleep(1.5)
 
 aria2c_global = [
-    "bt-max-open-files",
-    "download-result",
+    "bt-max-open-files", 
+    "download-result", 
     "keep-unfinished-download-result",
-    "log",
+    "log", 
     "log-level",
     "max-concurrent-downloads",
-    "max-download-result",
-    "max-overall-download-limit",
+    "max-download-result", 
+    "max-overall-download-limit", 
     "save-session",
-    "max-overall-upload-limit",
-    "optimize-concurrent-downloads",
-    "save-cookies",
-    "server-stat-of",
+    "max-overall-upload-limit", 
+    "optimize-concurrent-downloads", 
+    "save-cookies", 
+    "server-stat-of"
 ]
 
 if not aria2_options:
     aria2_options = aria2.client.get_global_option()
 else:
-    a2c_glo = {op: aria2_options[op] for op in aria2c_global if op in aria2_options}
+    a2c_glo = {op: aria2_options[op]
+               for op in aria2c_global if op in aria2_options}
     aria2.set_global_options(a2c_glo)
 
 qb_client = get_client()
@@ -523,14 +599,16 @@ else:
 
 log_info("Creating client from BOT_TOKEN")
 bot = tgClient(
-    "bot",
-    TELEGRAM_API,
+    "bot", 
+    TELEGRAM_API, 
     TELEGRAM_HASH,
-    bot_token=BOT_TOKEN,
-    workers=1000,
-    parse_mode=enums.ParseMode.HTML,
-    max_concurrent_transmissions=10,
+    bot_token=BOT_TOKEN, 
+    workers=1000, 
+    parse_mode=enums.ParseMode.HTML, 
+    max_concurrent_transmissions=10
 ).start()
+
 bot_loop = bot.loop
 
-scheduler = AsyncIOScheduler(timezone=str(get_localzone()), event_loop=bot_loop)
+scheduler = AsyncIOScheduler(timezone=str(
+    get_localzone()), event_loop=bot_loop)
