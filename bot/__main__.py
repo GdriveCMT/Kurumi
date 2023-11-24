@@ -117,6 +117,7 @@ async def restart(_, message):
     if Interval:
         for intvl in list(Interval.values()):
             intvl.cancel()    
+    await clean_all()
     proc1 = await create_subprocess_exec(
         "pkill", "-9", "-f", "gunicorn|aria2c|qbittorrent-nox|ffmpeg|rclone"
     )
