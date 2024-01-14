@@ -59,8 +59,8 @@ def bt_selection_buttons(id_):
         buttons.ubutton(
             "Pilih File", f"{BASE_URL}/app/files/{id_}?pin_code={pincode}"
         )
-    buttons.ibutton("Selesai Memilih", f"btsel done {gid} {id_}")
-    buttons.ibutton("Batalkan", f"btsel cancel {gid}")
+    buttons.ibutton("Select Files", f"btsel done {gid} {id_}")
+    buttons.ibutton("Cancel", f"btsel cancel {gid}")
     return buttons.build_menu(2)
 
 
@@ -68,7 +68,7 @@ async def get_telegraph_list(telegraph_content):
     path = [
         (
             await telegraph.create_page(
-                title="Pencari KQRM Bot", content=content
+                title="Mirror-Leech-Bot Drive Search", content=content
             )
         )["path"]
         for content in telegraph_content
