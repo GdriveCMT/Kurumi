@@ -245,14 +245,14 @@ class TaskListener(TaskConfig):
             and DATABASE_URL
         ):
             await DbManager().rm_complete_task(self.message.link)
-        msg = f"<b>Nama :</b> <code>{escape(self.name)}</code>"
-        msg += f"\n\n<b>Ukuran :</b> <code>{get_readable_file_size(self.size)}</code>"
+        msg = f"<b>Name:</b> <code>{escape(self.name)}</code>"
+        msg += f"\n\n<b>Size:</b> <code>{get_readable_file_size(self.size)}</code>"
         LOGGER.info(f"Task Done: {self.name}")
         if self.isLeech:
-            msg += f"\n\n<b>Jumlah File :</b> <code>{folders}</code>"
+            msg += f"\n\n<b>Total Files:</b> <code>{folders}</code>"
             if mime_type != 0:
-                msg += f"\n\n<b>File Rusak :</b> <code>{mime_type}</code>"
-            msg += f'\n\n<b>Oleh :</b> {self.tag}\n\n'
+                msg += f"\n\n<b>Corrupted Files:</b> <code>{mime_type}</code>"
+            msg += f'\n\n<b>cc:</b> {self.tag}\n\n'
             if not files:
                 await sendMessage(self.message, msg)
             else:
@@ -274,10 +274,10 @@ class TaskListener(TaskConfig):
                 await start_from_queued()
                 return
         else:
-            msg += f"\n\n<b>Tipe :</b> <code>{mime_type}</code>"
+            msg += f"\n\n<b>Type:</b> <code>{mime_type}</code>"
             if mime_type == "Folder":
-                msg += f"\n\n<b>Jumlah Folder :</b> <code>{folders}</code>"
-                msg += f"\n\n<b>Jumlah File :</b> <code>{files}</code>"
+                msg += f"\n\n<b>SubFolders:</b> <code>{folders}</code>"
+                msg += f"\n\n<b>Files:</b> <code>{files}</code>"
             if (
                 link
                 or rclonePath
@@ -311,12 +311,12 @@ class TaskListener(TaskConfig):
                         buttons.ubutton("⚡ Index", share_url)
                         if mime_type.startswith(("image", "video", "audio")):
                             share_urls = f"{INDEX_URL}findpath?id={dir_id}&view=true"
-                            buttons.ubutton("🎬 View", share_urls)
+                            buttons.ubutton("🌐 View Link", share_urls)
                 button = buttons.build_menu(2)
             else:
-                msg += f"\n\n<b>Path :</b> <code>{rclonePath}</code>"
+                msg += f"\n\n<b>Path:</b> <code>{rclonePath}</code>"
                 button = None
-            msg += f"\n\n<b>Oleh :</b> {self.tag}"
+            msg += f"\n\n<b>cc:</b> {self.tag}"
             await sendMessage(self.message, msg, button)
             # Log Chat
             LOG_CHAT_ID = None
