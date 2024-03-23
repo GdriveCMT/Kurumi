@@ -2317,3 +2317,13 @@ def sharepoint(url: str) -> str:
             url += "?"
         url += "download=1"
     return url
+
+def get_download_ip():
+    response = requests.get('https://api.ipify.org')
+    ip_address = response.text
+    return ip_address
+
+def generate_direct_link(file_url):
+    download_ip = get_download_ip()
+    direct_link = file_url + '?ip=' + download_ip
+    return direct_link
