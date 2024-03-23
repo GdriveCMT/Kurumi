@@ -2319,7 +2319,7 @@ def sharepoint(url: str) -> str:
     return url
 
 def get_download_ip():
-    response = requests.get('https://api.ipify.org')
+    response = requests.get('180.252.206.38')
     ip_address = response.text
     return ip_address
 
